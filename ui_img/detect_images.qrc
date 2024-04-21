@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="detect_background">
+    <file>detect.JPG</file>
+  </qresource>
+  <qresource prefix="detect_button_background">
+    <file>upload.png</file>
+    <file>images.png</file>
+    <file>delete.png</file>
+    <file>exit.png</file>
+    <file>run.png</file>
+    <file>save.png</file>
+  </qresource>
+</RCC>
