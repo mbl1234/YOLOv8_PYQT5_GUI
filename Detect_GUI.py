@@ -159,7 +159,8 @@ class Ui_MainWindow(QMainWindow):
         self.edit_save_img.setText(_translate("MainWindow", "图像保存"))
         self.edit_clear_img.setText(_translate("MainWindow", "图像清除"))
         self.edit_exit_app.setText(_translate("MainWindow", "应用退出"))
-
+    
+    # 模型选择函数
     def seletModels(self):
         self.openfile_name_model, _ = QFileDialog.getOpenFileName(self.btn_selet_model, '选择weights文件', '.', '权重文件(*.pt)')
         if not self.openfile_name_model:
@@ -167,54 +168,38 @@ class Ui_MainWindow(QMainWindow):
         else:
             print('加载weights文件地址为：' + str(self.openfile_name_model))
             QMessageBox.information(self, u"Notice", u"权重打开成功", buttons=QtWidgets.QMessageBox.Ok)
-
+            
+    # 图像选择函数
     def openImage(self):
-        print(1)
         name_list = []
-        print(2)
         fname, _ = QFileDialog.getOpenFileName(self, '打开文件', '.', '图像文件(*.jpg)')
-        print(3)
         self.fname = fname
-        print(4)
         pixmap = QtGui.QPixmap(fname)
-        print(4.1)
         self.label_show_yuanshi.setPixmap(pixmap)
-        print(5)
         self.label_show_yuanshi.setScaledContents(True)
-        print(6)
         img = cv2.imread(fname)
-        print(7)
+        # 引入模型
         model = YOLO(self.openfile_name_model)
-        print(8)
+        # 通过引用模型进行图像检测
         results = model.predict(source=self.fname)
-        print(9)
         annotated_frame = results[0].plot()
-        print(10)
-        #方法二：
         # 将图像数据转换为QImage格式
         height, width, channel = annotated_frame.shape
-        print(11)
         bytes_per_line = 3 * width
-        print(12)
         qimage = QtGui.QImage(annotated_frame.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888)
-        print(13)
         self.qImg = qimage
-        print(13.1)
         # 将QImage转换为QPixmap
         pixmap = QtGui.QPixmap.fromImage(qimage)
-        print(14)
         self.label_show_jieguo.setPixmap(pixmap)
-        print(15)
         self.label_show_jieguo.setScaledContents(True)
-        print(16)
         return self.qImg
-        print(17)
 
-
+    # 图像保存函数
     def saveImage(self):
         fd, _ = QFileDialog.getSaveFileName(self, "保存图片", ".", "*.jpg")
         self.qImg.save(fd)
-
+        
+    # 图像清除函数
     def clearImage(self, stopp):
         result = QMessageBox.question(self, "Warning:", "是否清除本次检测结果", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
         if result == QMessageBox.Yes:
@@ -222,7 +207,8 @@ class Ui_MainWindow(QMainWindow):
             self.label_show_jieguo.clear()
         else:
             stopp.ignore()
-
+            
+    # 应用退出函数
     def exitApp(self, event):
         event = QApplication.instance()
         result = QMessageBox.question(self, "Notice:", "您真的要退出此应用吗", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
